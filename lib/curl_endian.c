@@ -62,6 +62,43 @@ unsigned int Curl_read32_le(const unsigned char *buf)
          ((unsigned int)buf[2] << 16) | ((unsigned int)buf[3] << 24);
 }
 
+#if (CURL_SIZEOF_CURL_OFF_T > 4)
+/*
+ * Curl_read64_le()
+ *
+ * This function converts a 64-bit integer from the little endian format, as
+ * used in the incoming package to whatever endian format we're using
+ * natively.
+ *
+ * Parameters:
+ *
+ * buf      [in]     - A pointer to a 8 byte buffer.
+ *
+ * Returns the integer.
+ */
+#if defined(HAVE_LONGLONG)
+unsigned long long Curl_read64_le(const unsigned char *buf)
+{
+  return ((unsigned long long)buf[0]) |
+         ((unsigned long long)buf[1] << 8) |
+         ((unsigned long long)buf[2] << 16) |
+         ((unsigned long long)buf[3] << 24) |
+         ((unsigned long long)buf[4] << 32) |
+         ((unsigned long long)buf[5] << 40) |
+         ((unsigned long long)buf[6] << 48) |
+         ((unsigned long long)buf[7] << 56);
+}
+#else
+unsigned __int64 Curl_read64_le(const unsigned char *buf)
+{
+  return ((unsigned __int64)buf[0]) | ((unsigned __int64)buf[1] << 8) |
+         ((unsigned __int64)buf[2] << 16) | ((unsigned __int64)buf[3] << 24) |
+         ((unsigned __int64)buf[4] << 32) | ((unsigned __int64)buf[5] << 40) |
+         ((unsigned __int64)buf[6] << 48) | ((unsigned __int64)buf[7] << 56);
+}
+#endif
+#endif /* CURL_SIZEOF_CURL_OFF_T > 4 */
+
 /*
  * Curl_read16_be()
  *
