@@ -5175,11 +5175,15 @@ static CURLcode smb_done(struct connectdata *conn, CURLcode status,
 static CURLcode smb_disconnect(struct connectdata *conn, bool dead)
 {
   struct smb_conn *smbc = &conn->proto.smbc;
+  struct smb_request *req = conn->data->req.protop;
   (void) dead;
   Curl_safefree(smbc->share);
   Curl_safefree(smbc->domain);
   Curl_safefree(smbc->recv_buf);
   Curl_safefree(smbc->write_buf);
+  if (req) {
+    Curl_safefree(req->custom);
+  }
 
   return CURLE_OK;
 }
